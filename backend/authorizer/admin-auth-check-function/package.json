@@ -1,0 +1,7 @@
+{
+  "name": "voluntario-admin-authorizer",
+  "version": "0.1.0",
+  "scripts": {
+    "build": "esbuild ./ --entry-names=[dir]/index --external:@aws-sdk/client-lambda --bundle --minify --platform=node --target=node20.10.0 --outdir=dist"
+  }
+}
