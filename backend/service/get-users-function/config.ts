@@ -2,15 +2,16 @@ import {Construct} from "constructs";
 import * as cdk from "aws-cdk-lib";
 import {LambdaServiceConfiguration, ParameterSource} from "../../../utils/configuration";
 import * as lambda from "aws-cdk-lib/aws-lambda";
-import {RESOURCE_IDENTIFIER} from "../../../utils/resource-identifiers";
+import {AUTHORIZERS, LAMBDA_FUNCTIONS, RESOURCES} from "../../../utils/resource-identifiers";
+import {Constants} from "../../../utils/constants";
 
 export function config(scope: Construct, props?: cdk.StackProps): LambdaServiceConfiguration {
     const config = LambdaServiceConfiguration.nodejsServiceBase(
-        RESOURCE_IDENTIFIER.GET_ALL_USERS_FUNCTION,
-        RESOURCE_IDENTIFIER.API_GATEWAY,
+        LAMBDA_FUNCTIONS.GET_ALL_USERS_FUNCTION,
+        RESOURCES.API_GATEWAY,
         "GET",
         "users",
-        RESOURCE_IDENTIFIER.ADMIN_AUTHORIZER_FUNCTION,
+        AUTHORIZERS.ADMIN_AUTHORIZER_FUNCTION,
         true
     )
     config.environment = {
@@ -20,7 +21,7 @@ export function config(scope: Construct, props?: cdk.StackProps): LambdaServiceC
         },
         db_credentials: {
             source: ParameterSource.SECRETS_MANAGER,
-            key: "voluntario-db-secret"
+            key: Constants.DB_SECRET_NAME
         },
         last_deployed: new Date().toISOString()
     }

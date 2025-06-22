@@ -1,11 +1,16 @@
 import {Construct} from "constructs";
 import * as cdk from "aws-cdk-lib";
-import {LambdaConfiguration, ParameterSource} from "../../../utils/configuration";
+import {AuthorizerConfiguration, LambdaConfiguration, ParameterSource} from "../../../utils/configuration";
 import * as lambda from "aws-cdk-lib/aws-lambda";
-import {RESOURCE_IDENTIFIER} from "../../../utils/resource-identifiers";
+import {AUTHORIZERS} from "../../../utils/resource-identifiers";
 
 export function config(scope: Construct, props?: cdk.StackProps): LambdaConfiguration {
-    const config = LambdaConfiguration.nodejsBase(RESOURCE_IDENTIFIER.AUTHORIZER_FUNCTION)
+    const authHeaderSource = 'Authorization';
+
+    const config = AuthorizerConfiguration.nodejsAuthorizerBase(
+        AUTHORIZERS.AUTHORIZER_FUNCTION,
+        authHeaderSource
+    )
     config.environment = {
         stage: {
             source: ParameterSource.PARAMETER_STORE,
@@ -15,6 +20,7 @@ export function config(scope: Construct, props?: cdk.StackProps): LambdaConfigur
             source: ParameterSource.PARAMETER_STORE,
             key: "jwt_secret"
         },
+        auth_header_source: authHeaderSource,
         last_deployed: new Date().toISOString()
     }
     return config;

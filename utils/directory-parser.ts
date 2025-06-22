@@ -5,18 +5,13 @@ import {Construct} from "constructs";
 import * as cdk from "aws-cdk-lib";
 import {Resource} from "aws-cdk-lib/core";
 
-// Type definition for config modules
 type ConfigModule = {
     config: (scope: Construct, props?: cdk.StackProps) => ResourceConfiguration;
     extend: (resource: Resource, scope: Construct, props?: cdk.StackProps) => void;
 };
 
-const CONFIGS_ROOT = path.resolve(__dirname, 'configs');
-
 export async function loadConfigs(rootPath: string): Promise<ResourcesConfiguration> {
     const configurations: ResourcesConfiguration = {};
-
-    console.log(rootPath);
 
     const subfolders = fs.readdirSync(rootPath, {withFileTypes: true})
         .filter(subfolder => subfolder.isDirectory())
@@ -47,6 +42,5 @@ export async function loadConfigs(rootPath: string): Promise<ResourcesConfigurat
         }
     }
 
-    console.log(configurations);
     return configurations;
 }

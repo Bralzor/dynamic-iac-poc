@@ -3,7 +3,7 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from 'aws-lambda
 import {User} from "../../data/User";
 
 export const handler = async (event: APIGatewayProxyEvent, context: Context): Promise<APIGatewayProxyResult> => {
-    const client = new Client(process.env.db_credentials);
+    const client = new Client(JSON.parse(process.env.db_credentials as string));
 
     await client.connect();
 

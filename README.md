@@ -1,14 +1,17 @@
-# Welcome to your CDK TypeScript project
+# Welcome to Voluntario CDK Prototype
 
-This is a blank project for CDK development with TypeScript.
+This is a small PoC for creating AWS Infrastructure in a more developer-friendly way. It is not a complete solution and depends on an externally configured database. This is meant as a reference for different ways to configure CDK-based infrastructures. 
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+## Util files
 
-## Useful commands
+* `configuration.ts` contains the classes representing the different resources that can be configured via `config.ts` files
+* `constants.ts` contains different constants used in the app
+* `directory-parser.ts` parses and loads all config files into a map to be used when setting up the infrastructure
+* `env-var-utils.ts` handles injecting parameters/secrets as environment variables for lambda functions
+* `resource-identifiers.ts` provides constants that represent identifiers of different resources so they can be easily refferenced in config files
 
-* `npm run build`   compile typescript to js
-* `npm run watch`   watch for changes and compile
-* `npm run test`    perform the jest unit tests
-* `npx cdk deploy`  deploy this stack to your default AWS account/region
-* `npx cdk diff`    compare deployed stack with current state
-* `npx cdk synth`   emits the synthesized CloudFormation template
+
+
+
+`npm run deploy`
+to build all of the code and deploy the stack to an aws account

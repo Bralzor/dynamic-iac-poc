@@ -69,6 +69,19 @@ export class LambdaConfiguration extends ResourceConfiguration {
     }
 }
 
+export class AuthorizerConfiguration extends LambdaConfiguration {
+    authHeaderSource: string;
+
+    static nodejsAuthorizerBase(resourceName: RESOURCE_IDENTIFIER, authHeaderSource: string = 'Authorization'): AuthorizerConfiguration {
+        return new AuthorizerConfiguration(resourceName, Runtime.NODEJS_20_X, "index.handler", Architecture.ARM_64, authHeaderSource);
+    }
+
+    constructor(resourceName: RESOURCE_IDENTIFIER, runtime: Runtime, handler: string, architecture: Architecture, authHeaderSource: string) {
+        super(resourceName, runtime, handler, architecture);
+        this.authHeaderSource = authHeaderSource;
+    }
+}
+
 export type HTTP_METHOD = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
 export class LambdaServiceConfiguration extends LambdaConfiguration {

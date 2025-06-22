@@ -1,5 +1,12 @@
-import {APIGatewayAuthorizerResult, APIGatewayTokenAuthorizerEvent, Callback, Context} from 'aws-lambda';
+import {
+    APIGatewayAuthorizerEvent,
+    APIGatewayAuthorizerResult,
+    APIGatewayTokenAuthorizerEvent,
+    Callback,
+    Context
+} from 'aws-lambda';
 import * as jwt from 'jsonwebtoken';
+import {APIGatewayRequestAuthorizerEvent} from "aws-lambda/trigger/api-gateway-authorizer";
 
 // Define interface for decoded JWT token
 interface DecodedToken {
@@ -18,14 +25,13 @@ const secret: string = process.env.jwt_secret!;
  * @param callback - Lambda callback
  */
 export const handler = async (
-    event: APIGatewayTokenAuthorizerEvent,
+    event: APIGatewayRequestAuthorizerEvent,
     context: Context,
     callback: Callback<APIGatewayAuthorizerResult>
 ): Promise<APIGatewayAuthorizerResult> => {
     try {
         // Get the Authorization token from the event
-        const authorizationToken = event.authorizationToken;
-
+        const authorizationToken = event.headers![process.env.auth_header_source as string];
         if (!authorizationToken) {
             throw new Error('Unauthorized');
         }
@@ -35,6 +41,8 @@ export const handler = async (
 
         // Verify and decode the JWT
         const decodedToken = jwt.verify(token, process.env.JWT_SECRET || secret) as DecodedToken;
+
+        console.log(decodedToken);
 
         if (decodedToken.admin) {
             return generatePolicy(decodedToken.sub, 'Allow', event.methodArn);

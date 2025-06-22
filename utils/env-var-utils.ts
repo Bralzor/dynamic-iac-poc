@@ -4,10 +4,10 @@ import {Construct} from "constructs";
 import {IStringParameter} from "aws-cdk-lib/aws-ssm";
 import {Secret} from "aws-cdk-lib/aws-secretsmanager";
 import {ISecret} from "aws-cdk-lib/aws-secretsmanager";
+import {ResourceUtils} from "./resource-identifiers";
+import {Constants} from "./constants";
 
 export class EnvironmentVariableUtils {
-    parameters: {[key: string]: IStringParameter} = {};
-    secrets: {[key: string]: ISecret} = {};
 
     parseEnvironmentVariables(envs: ENVIRONMENT, scope: Construct): {[key: string]: any} {
         const result: { [key: string]: string } = {};
@@ -37,12 +37,12 @@ export class EnvironmentVariableUtils {
         [p: string]: string
     }, key: string) {
         let paramValue;
-        if (this.parameters[value.key] != null) {
-            paramValue = this.parameters[value.key].stringValue;
+        if (ResourceUtils.resources[value.key + Constants.PARAMETER_SUFFIX] != null) {
+            paramValue = (ResourceUtils.resources[value.key + Constants.PARAMETER_SUFFIX] as IStringParameter).stringValue;
         } else {
             const param = StringParameter.fromStringParameterName(scope, `StringParameter${value.key}`, value.key);
             paramValue = param.stringValue
-            this.parameters[value.key] = param;
+            ResourceUtils.resources[value.key + Constants.PARAMETER_SUFFIX] = param;
         }
         result[key] = paramValue;
     }
@@ -52,12 +52,12 @@ export class EnvironmentVariableUtils {
         [p: string]: string | IStringParameter
     }, key: string) {
         let secretValue;
-        if (this.secrets[value.key] != null) {
-            secretValue = this.secrets[value.key].secretValue.toString();
+        if (ResourceUtils.resources[value.key + Constants.SECRET_SUFFIX] != null) {
+            secretValue = (ResourceUtils.resources[value.key + Constants.SECRET_SUFFIX] as ISecret).secretValue.unsafeUnwrap();
         } else {
             const secret = Secret.fromSecretNameV2(scope, `Secret${value.key}`, value.key);
-            secretValue = secret.secretValue.toString();
-            this.secrets[value.key] = secret;
+            secretValue = secret.secretValue.unsafeUnwrap();
+            ResourceUtils.resources[value.key + Constants.SECRET_SUFFIX] = secret;
         }
         result[key] = secretValue;
     }
