@@ -17,5 +17,6 @@ TODOs:
 * Deeper use of the configuration classes, rename to something else (ResourceModule? ResourceAssembly?)
   * Move a lot of the code from CDK to the above mentioned classes
 * Handle dependencies between resources by using a pseudo-singleton approach
-* Look into Projen.io for CLI solution
+* Look into Projen.io for scaffolding solution
 * Add some documentation on purpose and goals of project
+* Remove voluntario-specific business code, make this more of a sample project
